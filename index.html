@@ -4,23 +4,94 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CPS Notes</title>
-  <link rel="stylesheet" href="styles.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to right, #00c6ff, #0072ff);
+      color: white;
+      text-align: center;
+      padding: 20px;
+    }
+    .container {
+      max-width: 800px;
+      margin: auto;
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.5);
+      border-radius: 10px;
+      text-align: center;
+    }
+    button {
+      padding: 10px 20px;
+      background: #0072ff;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+      margin-top: 20px;
+    }
+    button:hover {
+      background: #005bb5;
+    }
+    .page-link {
+      display: block;
+      margin: 10px;
+      text-decoration: none;
+      color: white;
+      font-size: 1.2em;
+    }
+  </style>
 </head>
 <body>
-  <header class="header">
-    <h1>CPS Notes</h1>
-    <p>Share and explore notes effortlessly!</p>
-  </header>
 
-  <main class="main-content">
-    <button class="add-page-btn" onclick="authenticate()">Add New Page</button>
-    <div id="pages-container" class="pages-container"></div>
-  </main>
+  <div class="container">
+    <h1>CPS Notes - Home</h1>
+    <button id="new-page-button" onclick="createNewPage()">Create New Page</button>
+    <div id="pages-list"></div>
+  </div>
 
-  <footer class="footer">
-    <p>&copy; 2024 CPS Notes | Built for sharing knowledge</p>
-  </footer>
+  <script>
+    // Admin password (this could be stored securely in a real app)
+    const ADMIN_PASSWORD = "admin123";
+    let pageCount = 0;
 
-  <script src="script.js"></script>
+    // Function to create a new page
+    function createNewPage() {
+      const pageTitle = prompt("Enter the title for the new page:");
+      if (pageTitle) {
+        // Generate a unique page name based on the title
+        const pageName = pageTitle.replace(/\s+/g, '_').toLowerCase();
+        pageCount++;
+        
+        // Store page in localStorage (simulated here)
+        localStorage.setItem(pageName, JSON.stringify({ title: pageTitle, content: "" }));
+
+        // Redirect to the newly created page
+        window.location.href = `page.html?page=${pageName}`;
+      }
+    }
+
+    // Function to display the list of pages
+    function displayPages() {
+      const pagesListDiv = document.getElementById('pages-list');
+      pagesListDiv.innerHTML = '';
+      
+      // Check if there are any saved pages in localStorage
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        const page = JSON.parse(localStorage.getItem(key));
+
+        const pageLink = document.createElement('a');
+        pageLink.href = `page.html?page=${key}`;
+        pageLink.className = "page-link";
+        pageLink.innerText = page.title;
+        pagesListDiv.appendChild(pageLink);
+      }
+    }
+
+    // Display pages list when the page loads
+    window.onload = function() {
+      displayPages();
+    }
+  </script>
 </body>
 </html>
