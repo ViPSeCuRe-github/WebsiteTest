@@ -1,33 +1,66 @@
-<script>
-  // Parse the URL to get the 'slug' parameter
-  const params = new URLSearchParams(window.location.search);
-  const slug = params.get("slug");
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Note</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="header">
+    <h1 id="page-title">Note Title</h1>
+  </header>
 
-  // Check if the 'slug' exists in localStorage
-  const pageData = localStorage.getItem(slug);
-  if (pageData) {
-    // If the page data exists, display it
-    const { title, content } = JSON.parse(pageData);
+  <main class="main-content">
+    <textarea id="page-content" rows="10" placeholder="Write your notes here..." disabled></textarea>
+    <button id="admin-btn" onclick="authenticate()">Enter Admin Mode</button>
+  </main>
 
-    // Update the title and content of the page
-    document.getElementById("page-title").innerText = title;
-    const contentField = document.getElementById("page-content");
-    contentField.value = content;
+  <footer class="footer">
+    <p>&copy; 2024 CPS Notes | Built for sharing knowledge</p>
+  </footer>
 
-    // Save edits to localStorage when the user types
-    contentField.addEventListener("input", (e) => {
-      const updatedContent = e.target.value;
-      localStorage.setItem(
-        slug,
-        JSON.stringify({ title, content: updatedContent, slug })
-      );
-    });
-  } else {
-    // If no data is found, display an error message
-    document.body.innerHTML = `
-      <h1>Page Not Found</h1>
-      <p>The note you are trying to access does not exist.</p>
-      <a href="index.html">Go back to home</a>
-    `;
-  }
-</script>
+  <script>
+    const ADMIN_PASSWORD = "admin123"; // Change this password as needed
+
+    // Load page content
+    const params = new URLSearchParams(window.location.search);
+    const slug = params.get("slug");
+
+    const pageData = localStorage.getItem(slug);
+    if (pageData) {
+      const { title, content } = JSON.parse(pageData);
+
+      // Display the title and content
+      document.getElementById("page-title").innerText = title;
+      const contentField = document.getElementById("page-content");
+      contentField.value = content;
+
+      // Disable editing by default
+      contentField.disabled = true;
+    } else {
+      document.body.innerHTML = `
+        <h1>Page Not Found</h1>
+        <p>The note you are trying to access does not exist.</p>
+        <a href="index.html">Go back to home</a>
+      `;
+    }
+
+    // Authenticate admin to enable editing
+    function authenticate() {
+      const password = prompt("Enter the admin password:");
+      if (password === ADMIN_PASSWORD) {
+        const contentField = document.getElementById("page-content");
+        contentField.disabled = false;
+        alert("Admin mode enabled. You can now edit this note.");
+        contentField.addEventListener("input", (e) => {
+          const updatedContent = e.target.value;
+          localStorage.setItem(slug, JSON.stringify({ title, content: updatedContent, slug }));
+        });
+      } else {
+        alert("Incorrect password! Editing is not allowed.");
+      }
+    }
+  </script>
+</body>
+</html>
