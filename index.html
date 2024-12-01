@@ -50,24 +50,19 @@
   </div>
 
   <script>
-    // Admin password (this could be stored securely in a real app)
-    const ADMIN_PASSWORD = "admin777";
-    let pageCount = 0;
+    // Admin password (you can store it more securely in a real application)
+    const ADMIN_PASSWORD = "admin123";
 
     // Function to create a new page
     function createNewPage() {
-      // Ask for the admin password
       const password = prompt("Enter the admin password to create a new page:");
-
-      // Check if the password is correct
+      
       if (password === ADMIN_PASSWORD) {
         const pageTitle = prompt("Enter the title for the new page:");
         if (pageTitle) {
-          // Generate a unique page name based on the title
           const pageName = pageTitle.replace(/\s+/g, '_').toLowerCase();
-          pageCount++;
           
-          // Store page in localStorage (simulated here)
+          // Store the page title and content as empty
           localStorage.setItem(pageName, JSON.stringify({ title: pageTitle, content: "" }));
 
           // Redirect to the newly created page
@@ -82,7 +77,7 @@
     function displayPages() {
       const pagesListDiv = document.getElementById('pages-list');
       pagesListDiv.innerHTML = '';
-      
+
       // Check if there are any saved pages in localStorage
       for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
