@@ -1,4 +1,4 @@
-const ADMIN_PASSWORD = "admin123"; // Admin password
+const ADMIN_PASSWORD = "admin777"; // Admin password
 
 // Get references to form and pages container
 const form = document.getElementById("note-form");
