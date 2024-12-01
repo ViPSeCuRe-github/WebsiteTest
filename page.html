@@ -64,9 +64,9 @@
     <!-- Image Upload Section (Visible only for admin) -->
     <div class="input-group" id="image-upload-section" style="display: none;">
       <label for="image-upload">Upload Image (Admin Only)</label>
-      <input type="file" id="image-upload" onchange="previewImage(event)" disabled>
+      <input type="file" id="image-upload" accept="image/*" onchange="previewImage(event)">
       <br>
-      <button id="upload-button" onclick="uploadImage()" class="upload-button" disabled>Upload Image</button>
+      <button id="upload-button" onclick="uploadImage()" disabled>Upload Image</button>
       <img id="image-preview" src="" alt="Image Preview" style="display:none;"/>
     </div>
 
