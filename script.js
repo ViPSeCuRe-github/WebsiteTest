@@ -1,10 +1,10 @@
+// Admin password
+const ADMIN_PASSWORD = "admin123"; // Change this as needed
+
 // Pages container
 const pagesContainer = document.getElementById("pages-container");
 
-// Admin password
-const ADMIN_PASSWORD = "admin123"; // Change this password as needed
-
-// Authenticate admin before allowing to add a page
+// Authenticate admin before adding a page
 function authenticate() {
   const password = prompt("Enter the admin password:");
   if (password === ADMIN_PASSWORD) {
@@ -14,24 +14,24 @@ function authenticate() {
   }
 }
 
-// Function to add a new page
+// Add a new page
 function addPage() {
-  // Prompt for page title
   const title = prompt("Enter the title for this page:");
   if (!title) return;
 
-  // Create a unique slug for the page
+  // Create a unique slug
   const slug = title.toLowerCase().replace(/\s+/g, "-");
 
-  // Save page details to local storage
-  const pageData = {
-    title: title,
-    content: "",
-    slug: slug,
-  };
+  // Save page details in localStorage
+  const pageData = { title: title, content: "", slug: slug };
   localStorage.setItem(slug, JSON.stringify(pageData));
 
-  // Add a link to the new page
+  // Add link to the page
+  addPageToUI(pageData);
+}
+
+// Add a page to the UI
+function addPageToUI({ title, slug }) {
   const pageLink = document.createElement("a");
   pageLink.href = `page.html?slug=${slug}`;
   pageLink.className = "page-card";
@@ -39,19 +39,14 @@ function addPage() {
   pagesContainer.appendChild(pageLink);
 }
 
-// Function to load pages from local storage
+// Load pages from localStorage
 function loadPages() {
-  for (let i = 0; i < localStorage.length; i++) {
-    const slug = localStorage.key(i);
+  Object.keys(localStorage).forEach((slug) => {
     const pageData = JSON.parse(localStorage.getItem(slug));
     if (pageData) {
-      const pageLink = document.createElement("a");
-      pageLink.href = `page.html?slug=${slug}`;
-      pageLink.className = "page-card";
-      pageLink.innerHTML = `<h3>${pageData.title}</h3><p>Click to view this page</p>`;
-      pagesContainer.appendChild(pageLink);
+      addPageToUI(pageData);
     }
-  }
+  });
 }
 
 // Load pages on startup
