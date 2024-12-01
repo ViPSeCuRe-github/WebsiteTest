@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Note</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="header">
+    <h1 id="page-title">Note Title</h1>
+  </header>
+
+  <main class="main-content">
+    <textarea id="page-content" rows="10" placeholder="Write your notes here..."></textarea>
+  </main>
+
+  <footer class="footer">
+    <p>&copy; 2024 CPS Notes | Built for sharing knowledge</p>
+  </footer>
+
+  <script>
+    // Load page content from local storage
+    const params = new URLSearchParams(window.location.search);
+    const slug = params.get("slug");
+
+    const pageData = localStorage.getItem(slug);
+    if (pageData) {
+      const { title, content } = JSON.parse(pageData);
+
+      // Set title and content
+      document.getElementById("page-title").innerText = title;
+      const contentField = document.getElementById("page-content");
+      contentField.value = content;
+
+      // Save changes to local storage on input
+      contentField.addEventListener("input", (e) => {
+        const updatedContent = e.target.value;
+        localStorage.setItem(slug, JSON.stringify({ title, content: updatedContent, slug }));
+      });
+    } else {
+      document.body.innerHTML = "<h1>Page not found!</h1>";
+    }
+  </script>
+</body>
+</html>
