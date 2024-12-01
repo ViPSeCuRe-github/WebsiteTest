@@ -12,8 +12,8 @@
   </header>
 
   <main class="main-content">
-    <textarea id="page-content" rows="10" placeholder="Write your notes here..." disabled></textarea>
-    <button id="admin-btn" onclick="authenticate()">Enter Admin Mode</button>
+    <textarea id="page-content" rows="10" disabled></textarea>
+    <button id="admin-btn" onclick="authenticate()">Enable Editing</button>
   </main>
 
   <footer class="footer">
@@ -21,17 +21,17 @@
   </footer>
 
   <script>
-    const ADMIN_PASSWORD = "admin123"; // Change this password as needed
+    const ADMIN_PASSWORD = "admin123"; // Same as in script.js
 
-    // Load page content
+    // Load the note data
     const params = new URLSearchParams(window.location.search);
     const slug = params.get("slug");
 
-    const pageData = localStorage.getItem(slug);
+    const pageData = JSON.parse(localStorage.getItem(slug));
     if (pageData) {
-      const { title, content } = JSON.parse(pageData);
+      const { title, content } = pageData;
 
-      // Display the title and content
+      // Set the title and content
       document.getElementById("page-title").innerText = title;
       const contentField = document.getElementById("page-content");
       contentField.value = content;
@@ -53,9 +53,14 @@
         const contentField = document.getElementById("page-content");
         contentField.disabled = false;
         alert("Admin mode enabled. You can now edit this note.");
+
+        // Save changes to localStorage
         contentField.addEventListener("input", (e) => {
           const updatedContent = e.target.value;
-          localStorage.setItem(slug, JSON.stringify({ title, content: updatedContent, slug }));
+          localStorage.setItem(
+            slug,
+            JSON.stringify({ title: pageData.title, content: updatedContent, slug })
+          );
         });
       } else {
         alert("Incorrect password! Editing is not allowed.");
