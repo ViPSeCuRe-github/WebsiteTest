@@ -1,46 +1,33 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Note</title>
-  <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-  <header class="header">
-    <h1 id="page-title">Note Title</h1>
-  </header>
+<script>
+  // Parse the URL to get the 'slug' parameter
+  const params = new URLSearchParams(window.location.search);
+  const slug = params.get("slug");
 
-  <main class="main-content">
-    <textarea id="page-content" rows="10" placeholder="Write your notes here..."></textarea>
-  </main>
+  // Check if the 'slug' exists in localStorage
+  const pageData = localStorage.getItem(slug);
+  if (pageData) {
+    // If the page data exists, display it
+    const { title, content } = JSON.parse(pageData);
 
-  <footer class="footer">
-    <p>&copy; 2024 CPS Notes | Built for sharing knowledge</p>
-  </footer>
+    // Update the title and content of the page
+    document.getElementById("page-title").innerText = title;
+    const contentField = document.getElementById("page-content");
+    contentField.value = content;
 
-  <script>
-    // Load page content from local storage
-    const params = new URLSearchParams(window.location.search);
-    const slug = params.get("slug");
-
-    const pageData = localStorage.getItem(slug);
-    if (pageData) {
-      const { title, content } = JSON.parse(pageData);
-
-      // Set title and content
-      document.getElementById("page-title").innerText = title;
-      const contentField = document.getElementById("page-content");
-      contentField.value = content;
-
-      // Save changes to local storage on input
-      contentField.addEventListener("input", (e) => {
-        const updatedContent = e.target.value;
-        localStorage.setItem(slug, JSON.stringify({ title, content: updatedContent, slug }));
-      });
-    } else {
-      document.body.innerHTML = "<h1>Page not found!</h1>";
-    }
-  </script>
-</body>
-</html>
+    // Save edits to localStorage when the user types
+    contentField.addEventListener("input", (e) => {
+      const updatedContent = e.target.value;
+      localStorage.setItem(
+        slug,
+        JSON.stringify({ title, content: updatedContent, slug })
+      );
+    });
+  } else {
+    // If no data is found, display an error message
+    document.body.innerHTML = `
+      <h1>Page Not Found</h1>
+      <p>The note you are trying to access does not exist.</p>
+      <a href="index.html">Go back to home</a>
+    `;
+  }
+</script>
