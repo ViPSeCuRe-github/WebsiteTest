@@ -45,6 +45,23 @@
     .delete-button {
       background: red;
     }
+    #image-preview {
+      max-width: 100%;
+      height: auto;
+      margin-top: 20px;
+      display: none;
+    }
+    #image-upload {
+      margin-top: 20px;
+      padding: 10px;
+      background-color: #0072ff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+    }
+    #image-upload:hover {
+      background-color: #005bb5;
+    }
   </style>
 </head>
 <body>
@@ -55,6 +72,11 @@
     <textarea id="page-content"></textarea>
     <button onclick="savePage()">Save Page</button>
     <button class="delete-button" onclick="deletePage()">Delete Page</button>
+
+    <div id="image-upload-container" style="display: none;">
+      <input type="file" id="image-upload" accept="image/*" onchange="previewImage(event)" />
+      <img id="image-preview" />
+    </div>
   </div>
 
   <script>
@@ -78,6 +100,12 @@
       // Set page title and content
       document.getElementById('page-title').innerText = pageData.title;
       document.getElementById('page-content').value = pageData.content;
+
+      // Display image upload option if the admin is logged in
+      const password = prompt("Enter the admin password to edit the page:");
+      if (password === ADMIN_PASSWORD) {
+        document.getElementById('image-upload-container').style.display = 'block';
+      }
     }
 
     // Function to save the page
@@ -109,7 +137,21 @@
       }
     }
 
-    // Load page when the page is opened
+    // Function to preview image before uploading
+    function previewImage(event) {
+      const file = event.target.files[0];
+      const reader = new FileReader();
+
+      reader.onload = function() {
+        const previewImage = document.getElementById('image-preview');
+        previewImage.src = reader.result;
+        previewImage.style.display = 'block'; // Show the image preview
+      };
+
+      reader.readAsDataURL(file);
+    }
+
+    // Load the page content when the page is opened
     window.onload = loadPage;
   </script>
 </body>
