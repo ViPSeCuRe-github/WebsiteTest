@@ -1,10 +1,10 @@
 // Pages container
-const pagesContainer = document.getElementById('pages-container');
+const pagesContainer = document.getElementById("pages-container");
 
-// Password for admin authentication
-const ADMIN_PASSWORD = "admin123"; // Change this to your desired password
+// Admin password
+const ADMIN_PASSWORD = "admin123"; // Change this password as needed
 
-// Authenticate the admin
+// Authenticate admin before allowing to add a page
 function authenticate() {
   const password = prompt("Enter the admin password:");
   if (password === ADMIN_PASSWORD) {
@@ -16,14 +16,14 @@ function authenticate() {
 
 // Function to add a new page
 function addPage() {
-  // Prompt for the page title
+  // Prompt for page title
   const title = prompt("Enter the title for this page:");
   if (!title) return;
 
-  // Generate a unique URL-friendly slug for the page
+  // Create a unique slug for the page
   const slug = title.toLowerCase().replace(/\s+/g, "-");
 
-  // Save the page data to local storage (or use a backend for permanent storage)
+  // Save page details to local storage
   const pageData = {
     title: title,
     content: "",
@@ -31,7 +31,7 @@ function addPage() {
   };
   localStorage.setItem(slug, JSON.stringify(pageData));
 
-  // Add a link to the page in the pages container
+  // Add a link to the new page
   const pageLink = document.createElement("a");
   pageLink.href = `page.html?slug=${slug}`;
   pageLink.className = "page-card";
@@ -39,26 +39,20 @@ function addPage() {
   pagesContainer.appendChild(pageLink);
 }
 
-// Function to load page content
-function loadPageContent() {
-  const params = new URLSearchParams(window.location.search);
-  const slug = params.get("slug");
-
-  // Retrieve the page data from local storage
-  const pageData = localStorage.getItem(slug);
-  if (pageData) {
-    const { title, content } = JSON.parse(pageData);
-
-    // Update the page with the retrieved data
-    document.getElementById("page-title").innerText = title;
-    document.getElementById("page-content").value = content;
-
-    // Save edits to local storage
-    document.getElementById("page-content").addEventListener("input", (e) => {
-      const updatedContent = e.target.value;
-      localStorage.setItem(slug, JSON.stringify({ title, content: updatedContent, slug }));
-    });
-  } else {
-    document.body.innerHTML = "<h1>Page not found!</h1>";
+// Function to load pages from local storage
+function loadPages() {
+  for (let i = 0; i < localStorage.length; i++) {
+    const slug = localStorage.key(i);
+    const pageData = JSON.parse(localStorage.getItem(slug));
+    if (pageData) {
+      const pageLink = document.createElement("a");
+      pageLink.href = `page.html?slug=${slug}`;
+      pageLink.className = "page-card";
+      pageLink.innerHTML = `<h3>${pageData.title}</h3><p>Click to view this page</p>`;
+      pagesContainer.appendChild(pageLink);
+    }
   }
 }
+
+// Load pages on startup
+loadPages();
