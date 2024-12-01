@@ -51,22 +51,30 @@
 
   <script>
     // Admin password (this could be stored securely in a real app)
-    const ADMIN_PASSWORD = "admin123";
+    const ADMIN_PASSWORD = "admin777";
     let pageCount = 0;
 
     // Function to create a new page
     function createNewPage() {
-      const pageTitle = prompt("Enter the title for the new page:");
-      if (pageTitle) {
-        // Generate a unique page name based on the title
-        const pageName = pageTitle.replace(/\s+/g, '_').toLowerCase();
-        pageCount++;
-        
-        // Store page in localStorage (simulated here)
-        localStorage.setItem(pageName, JSON.stringify({ title: pageTitle, content: "" }));
+      // Ask for the admin password
+      const password = prompt("Enter the admin password to create a new page:");
 
-        // Redirect to the newly created page
-        window.location.href = `page.html?page=${pageName}`;
+      // Check if the password is correct
+      if (password === ADMIN_PASSWORD) {
+        const pageTitle = prompt("Enter the title for the new page:");
+        if (pageTitle) {
+          // Generate a unique page name based on the title
+          const pageName = pageTitle.replace(/\s+/g, '_').toLowerCase();
+          pageCount++;
+          
+          // Store page in localStorage (simulated here)
+          localStorage.setItem(pageName, JSON.stringify({ title: pageTitle, content: "" }));
+
+          // Redirect to the newly created page
+          window.location.href = `page.html?page=${pageName}`;
+        }
+      } else {
+        alert("Incorrect password! Only the admin can create new pages.");
       }
     }
 
