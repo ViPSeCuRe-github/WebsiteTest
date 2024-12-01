@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Page - CPS Notes</title>
+  <title>Edit Page - CPS Notes</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -18,16 +18,17 @@
       padding: 20px;
       background: rgba(0, 0, 0, 0.5);
       border-radius: 10px;
-      text-align: center;
     }
     textarea {
       width: 100%;
+      height: 200px;
+      margin-top: 20px;
       padding: 10px;
-      margin-top: 10px;
+      font-size: 1.1em;
+      background-color: #333;
+      color: white;
+      border: none;
       border-radius: 5px;
-    }
-    .input-group {
-      margin: 10px;
     }
     button {
       padding: 10px 20px;
@@ -36,124 +37,80 @@
       border: none;
       cursor: pointer;
       border-radius: 5px;
+      margin-top: 20px;
     }
     button:hover {
       background: #005bb5;
     }
-    #image-preview {
-      max-width: 100%;
-      max-height: 500px;
-      object-fit: contain;
+    .delete-button {
+      background: red;
     }
   </style>
 </head>
 <body>
 
   <div class="container">
-    <h1 id="page-title">Page Title</h1>
-    <textarea id="page-content" rows="10" placeholder="Enter your content here..." disabled></textarea>
-    <br><br>
-
-    <div class="input-group" id="image-upload-section" style="display: none;">
-      <label for="image-upload">Upload Image (Admin Only)</label>
-      <input type="file" id="image-upload" accept="image/*" onchange="previewImage(event)">
-      <br>
-      <button id="upload-button" onclick="uploadImage()" disabled>Upload Image</button>
-      <img id="image-preview" src="" alt="Image Preview" style="display:none;"/>
-    </div>
-
-    <br><br>
-    <button id="save-button" onclick="savePage()" style="display: none;">Save Page</button>
-    <button id="delete-button" onclick="deletePage()" style="display: none;">Delete Page</button>
+    <h1>Edit Page</h1>
+    <h2 id="page-title"></h2>
+    <textarea id="page-content"></textarea>
+    <button onclick="savePage()">Save Page</button>
+    <button class="delete-button" onclick="deletePage()">Delete Page</button>
   </div>
 
   <script>
-    // Admin password (this could be stored securely in a real app)
-    const ADMIN_PASSWORD = "admin123";
+    const ADMIN_PASSWORD = "admin123"; // Password for admin
 
-    // Get the page from URL
+    // Get the page name from URL params
     const urlParams = new URLSearchParams(window.location.search);
     const pageName = urlParams.get('page');
-    
-    if (!pageName) {
-      alert("No page specified!");
-      window.location.href = 'index.html'; // Redirect to home if no page found
-    }
+    let pageData;
 
-    // Load the page content
+    // Function to load the page content
     function loadPage() {
-      const pageData = JSON.parse(localStorage.getItem(pageName));
-      if (pageData) {
-        document.getElementById('page-title').innerText = pageData.title;
-        document.getElementById('page-content').value = pageData.content;
-      } else {
+      pageData = JSON.parse(localStorage.getItem(pageName));
+
+      if (!pageData) {
         alert("Page not found!");
+        window.location.href = "index.html";
+        return;
       }
+
+      // Set page title and content
+      document.getElementById('page-title').innerText = pageData.title;
+      document.getElementById('page-content').value = pageData.content;
     }
 
-    // Save the page content
+    // Function to save the page
     function savePage() {
-      const content = document.getElementById('page-content').value;
-      const pageData = JSON.parse(localStorage.getItem(pageName));
-      if (pageData) {
-        pageData.content = content;
+      const password = prompt("Enter the admin password to save changes:");
+
+      if (password === ADMIN_PASSWORD) {
+        const updatedContent = document.getElementById('page-content').value;
+        pageData.content = updatedContent;
+
+        // Save the updated page to localStorage
         localStorage.setItem(pageName, JSON.stringify(pageData));
         alert("Page saved successfully!");
+      } else {
+        alert("Incorrect password! Only the admin can save changes.");
       }
     }
 
-    // Delete the page
+    // Function to delete the page
     function deletePage() {
-      const password = prompt("Enter the admin password to delete the page:");
+      const password = prompt("Enter the admin password to delete this page:");
+
       if (password === ADMIN_PASSWORD) {
-        if (confirm("Are you sure you want to delete this page?")) {
-          localStorage.removeItem(pageName);
-          alert("Page deleted successfully!");
-          window.location.href = 'index.html'; // Redirect to home after deletion
-        }
+        localStorage.removeItem(pageName);
+        alert("Page deleted successfully!");
+        window.location.href = "index.html";
       } else {
-        alert("Incorrect password!");
+        alert("Incorrect password! Only the admin can delete pages.");
       }
     }
 
-    // Image Upload Functions (for Admin only)
-    function previewImage(event) {
-      const file = event.target.files[0];
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        const imgPreview = document.getElementById('image-preview');
-        imgPreview.style.display = 'block';
-        imgPreview.src = e.target.result;
-      };
-      reader.readAsDataURL(file);
-    }
-
-    function uploadImage() {
-      const password = prompt("Enter the admin password to upload the image:");
-      if (password === ADMIN_PASSWORD) {
-        alert("Image uploaded successfully!");
-      } else {
-        alert("Incorrect password! You are not authorized to upload images.");
-      }
-    }
-
-    // Admin Check for Editing Features
-    window.onload = function() {
-      const password = prompt("Enter the admin password to access admin features:");
-      if (password === ADMIN_PASSWORD) {
-        // Allow editing
-        document.getElementById('page-content').disabled = false;
-        document.getElementById('save-button').style.display = 'inline-block';
-        document.getElementById('delete-button').style.display = 'inline-block';
-        document.getElementById('image-upload-section').style.display = 'block';
-      } else {
-        alert("You are not authorized to edit this page.");
-      }
-
-      // Load page data
-      loadPage();
-    }
+    // Load page when the page is opened
+    window.onload = loadPage;
   </script>
-
 </body>
 </html>
