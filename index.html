@@ -1,100 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CPS Notes</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: linear-gradient(to right, #00c6ff, #0072ff);
-      color: white;
-      text-align: center;
-      padding: 20px;
-    }
-    .container {
-      max-width: 800px;
-      margin: auto;
-      padding: 20px;
-      background: rgba(0, 0, 0, 0.5);
-      border-radius: 10px;
-      text-align: center;
-    }
-    button {
-      padding: 10px 20px;
-      background: #0072ff;
-      color: white;
-      border: none;
-      cursor: pointer;
-      border-radius: 5px;
-      margin-top: 20px;
-    }
-    button:hover {
-      background: #005bb5;
-    }
-    .page-link {
-      display: block;
-      margin: 10px;
-      text-decoration: none;
-      color: white;
-      font-size: 1.2em;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intership | Gaming & Tech</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <header>
+        <h1>🎮 Intership — Where Ideas Turn Into Impact</h1>
+        <p>Gaming. Tech. Community.</p>
+        <button onclick="joinIntership()">Join Us</button>
+    </header>
 
-  <div class="container">
-    <h1>CPS Notes - Home</h1>
-    <button id="new-page-button" onclick="createNewPage()">Create New Page</button>
-    <div id="pages-list"></div>
-  </div>
+    <section id="about">
+        <h2>Who We Are</h2>
+        <p>Intership is a passion-driven project where gaming, development, and community blend into one.</p>
+    </section>
 
-  <script>
-    // Admin password (you can store it more securely in a real application)
-    const ADMIN_PASSWORD = "admin123";
+    <section id="features">
+        <h2>What We Do</h2>
+        <ul>
+            <li>🏆 **Tournaments & Esports** — Competitive events & team sponsorship</li>
+            <li>💻 **Tech & Development** — Bots, websites, community tools</li>
+            <li>🌐 **Community Spaces** — A hub for players and creators</li>
+        </ul>
+    </section>
 
-    // Function to create a new page
-    function createNewPage() {
-      const password = prompt("Enter the admin password to create a new page:");
-      
-      if (password === ADMIN_PASSWORD) {
-        const pageTitle = prompt("Enter the title for the new page:");
-        if (pageTitle) {
-          const pageName = pageTitle.replace(/\s+/g, '_').toLowerCase();
-          
-          // Store the page title and content as empty
-          localStorage.setItem(pageName, JSON.stringify({ title: pageTitle, content: "" }));
-
-          // Redirect to the newly created page
-          window.location.href = `page.html?page=${pageName}`;
-        }
-      } else {
-        alert("Incorrect password! Only the admin can create new pages.");
-      }
-    }
-
-    // Function to display the list of pages
-    function displayPages() {
-      const pagesListDiv = document.getElementById('pages-list');
-      pagesListDiv.innerHTML = '';
-
-      // Check if there are any saved pages in localStorage
-      for (let i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i);
-        const page = JSON.parse(localStorage.getItem(key));
-
-        const pageLink = document.createElement('a');
-        pageLink.href = `page.html?page=${key}`;
-        pageLink.className = "page-link";
-        pageLink.innerText = page.title;
-        pagesListDiv.appendChild(pageLink);
-      }
-    }
-
-    // Display pages list when the page loads
-    window.onload = function() {
-      displayPages();
-    }
-  </script>
+    <script src="script.js"></script>
 </body>
 </html>
